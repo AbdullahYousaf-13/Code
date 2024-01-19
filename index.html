@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness and Workout Journey</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link href="basic.css" rel="stylesheet">
+</head>
+<body>
+
+    <style>
+        nav {
+            background-color: #333;
+            color: white;
+            padding: 8px;
+        }
+    
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            margin-top: auto;
+            margin-bottom: auto;
+        }
+    
+        nav li {
+            display: inline;
+            margin-right: 20px;
+        }
+    
+        nav a {
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #ffc107;
+        }
+
+        nav img {
+            margin-left: 16px;
+            height: 40px;
+        }
+
+        .bg1 {
+            position: relative;
+            opacity: 0.65;
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-image: url("assets/main_bg.jpg");
+            min-height: 100vh; /* Set minimum height to 100% of the viewport height */
+        }
+
+        .caption {
+            color: #e5e5e5;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .border {
+            padding: 10px;
+            border: 2px solid white;
+        }
+
+        .card {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+
+        .about-us {
+        margin-top: 20px;
+        }
+
+        .about-us p {
+            text-align: center;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .first-row-card {
+            height: 300px;
+        }
+
+    </style>
+
+    <div>
+        <nav class="nav">
+            <div class="logo">
+                <img src="./assets/logo.png" alt="Logo">
+            </div>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <!-- <li><a href="login.html">Login</a></li> -->
+                <li><a href="userRegistration.html">Register</a></li>
+                <li><a href="workouts.html">Workouts</a></li>
+                <li><a href="dietPlans.html">Diet Plans</a></li>
+                <li><a href="about.html">About Us</a></li>
+            </ul>
+        </nav>
+         
+    
+        <!-- Content -->
+        <div class="content">
+            <div class="bg1">
+                <div class="caption">
+                    <span class="border">FITNESS and Workout</span>
+                </div>
+            </div>
+            
+            <!-- Dynamic Cards Section -->
+            <div class="row" id="dynamicContent"></div>
+
+            <!-- About Us Section -->
+            <div class="about-us">
+                <h2>About Us</h2>
+                <p>Welcome to Fitness and Workout, the all-in-one platform designed to elevate your fitness journey. Whether you're a seasoned athlete or just starting, Fitness and Workout brings together expert trainers, personalized workouts, diet plans, and nutritionists to help you achieve your health and fitness goals.
+                </p>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <script>
+        const currentUserId = 26
+        function personalInfo() {
+            return `<span>${attribute.name}</span>`
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            
+            Promise.all([
+                fetch(`http://localhost:3000/api/users/${currentUserId}`)
+                    .then(response => response.json()),
+                fetch(`http://localhost:3000/api/fitness_enthusiasts/${currentUserId}`)
+                    .then(response => response.json())
+            ])
+                .then(([resp1, resp2]) => {
+                    let parsedData = [
+                            { attribute: 'name', label: 'Name', value: resp1.username },
+                            { attribute: 'height', label: 'Height', value: resp2.height },
+                            { attribute: 'weight', label: 'Weight', value: resp2.weight },
+                            { attribute: 'dob', label: 'Date Of Birth', value: resp2.dob },
+                        ]
+                    updateDynamicContent('Personal Info', parsedData)
+                    generateGOTW()
+                })
+                .catch(error => console.error('Error fetching personal info data:', error)); 
+
+            // Fetch data for workouts
+            fetch('http://localhost:3000/api/workouts')
+                .then(response => response.json())
+                .then(data => {
+                    generateWorkoutCard(data)
+                })
+                .catch(error => console.error('Error fetching workouts data:', error));
+            
+            // Fetch data for dietplans
+            fetch('http://localhost:3000/api/diet_plans')
+            .then(response => response.json())
+            .then(data => {
+                generateDietPlanCard(data)
+            })
+            .catch(error => console.error('Error fetching dietplan data:', error));
+        });
+         // Function to update the dynamic content in the DOM
+        function updateDynamicContent(category, categoryData) {
+                // Create a card dynamically
+                let cardHtml = `
+                    <div class="col-md-4">
+                    <div class="card first-row-card">
+                        <h2>${category}</h2>
+                        <ul>`;
+                // Loop through the attributes for the specific category
+                for (let item of categoryData) {
+                    // Check if the item has a label, use it; otherwise, use the attribute name
+                    const attributeName = item.label || item.attribute;
+                    cardHtml += `<li><strong>${attributeName}:</strong> ${item.value}</li>`;
+                }
+                cardHtml += `</ul></div></div>`;
+                // Append the card to the dynamicContent div
+                document.getElementById('dynamicContent').innerHTML += cardHtml;
+            }
+        function generateWorkoutCard(workouts) {
+                // Reference to the dynamicContent div
+                const dynamicContent = document.getElementById('dynamicContent');
+
+                // Generate a card with a table
+                let cardHtml = `
+                    <div class="col-md-12">
+                        <div class="card">
+                            <h2>Workouts</h2>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Duration</th>
+                                        <th>Type</th>
+                                        <th>Day</th>
+                                        <th>Description</th>
+                                        <th>Trainer ID</th>
+                                        <th>Workout ID</th>
+                                    </tr>
+                                </thead>
+                                <tbody>`;
+
+                // Loop through the fetched workouts and add rows to the table
+                workouts.slice(0,3).forEach(workout => {
+                    cardHtml += `
+                        <tr>
+                            <td>${workout.name}</td>
+                            <td>${workout.duration}</td>
+                            <td>${workout.type}</td>
+                            <td>${workout.day}</td>
+                            <td>${workout.description}</td>
+                            <td>${workout.trainer_id}</td>
+                            <td>${workout.workout_id}</td>
+                        </tr>`;
+                });
+
+                // Close the table and card HTML
+                cardHtml += `
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>`;
+
+                // Append the generated card to the dynamicContent div
+                dynamicContent.innerHTML += cardHtml;
+            }
+        function generateDietPlanCard(diet_plans) {
+                // Reference to the dynamicContent div
+                const dynamicContent = document.getElementById('dynamicContent');
+
+                // Generate a card with a table
+                let cardHtml = `
+                    <div class="col-md-12">
+                        <div class="card">
+                            <h2>Diet Plans</h2>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Calories</th>
+                                        <th>Meals</th>
+                                        <th>Description</th>
+                                        <th>Dietitian ID</th>
+                                        <th>Diet Plan ID</th>
+                                    </tr>
+                                </thead>
+                                <tbody>`;
+
+                // Loop through the fetched diet plans and add rows to the table
+                diet_plans.slice(0,3).forEach(diet_plan => {
+                    cardHtml += `
+                        <tr>
+                            <td>${diet_plan.name}</td>
+                            <td>${diet_plan.calories}</td>
+                            <td>${diet_plan.meals}</td>
+                            <td>${diet_plan.description}</td>
+                            <td>${diet_plan.dietitian_id}</td>
+                            <td>${diet_plan.diet_plan_id}</td>
+                        </tr>`;
+                });
+
+                // Close the table and card HTML
+                cardHtml += `
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>`;
+
+                // Append the generated card to the dynamicContent div
+                dynamicContent.innerHTML += cardHtml;
+            }
+        function generateGOTW() {
+            // Reference to the dynamicContent div
+            const dynamicContent = document.getElementById('dynamicContent');
+
+            // Generate a card with a table
+            let cardHtml = `
+                <div class="col-md-8">
+                    <div class="card first-row-card">
+                        <h2>Goals of the Week</h2>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Day</th>
+                                    <th>Exercise</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>`;
+                cardHtml += `
+                    <tr>
+                        <td>Monday</td>
+                        <td>Strength Training</td>
+                        <td>Intense full-body workout for strength and muscle development.</td>
+                    </tr>`;
+                cardHtml += `
+                    <tr>
+                        <td>Tuesday</td>
+                        <td>Cardiovascular Exercise</td>
+                        <td>30-45 minutes of heart-pumping cardio for endurance and calorie burn.</td>
+                    </tr>`;
+                cardHtml += `
+                    <tr>
+                        <td>Wednesday</td>
+                        <td>Flexibility and Mobility</td>
+                        <td>Enhance flexibility and prevent injuries with dynamic stretches and yoga.</td>
+                    </tr>`;
+                cardHtml += `
+                    <tr>
+                        <td>Thursday</td>
+                        <td>High-Intensity</td>
+                        <td>Short, intense bursts of exercise for metabolic boost and fat burning.</td>
+                    </tr>`;
+                cardHtml += `
+                    <tr>
+                        <td>Friday</td>
+                        <td>Active Recovery</td>
+                        <td>Light activity to aid recovery and maintain overall mobility.</td>
+                    </tr>`;
+                cardHtml += `
+                    <tr>
+                        <td>Saturday</td>
+                        <td>Endurance Training</td>
+                        <td>Prolonged aerobic exercise for stamina and cardiovascular health.</td>
+                    </tr>`;
+                cardHtml += `
+                    <tr>
+                        <td>Sunday</td>
+                        <td>Cheat Day</td>
+                        <td>Enjoy a break with indulgent food choices in moderation.</td>
+                    </tr>`;
+            // Close the table and card HTML
+            cardHtml += `
+                            </tbody>
+                        </table>
+                    </div>
+                </div>`;
+
+            // Append the generated card to the dynamicContent div
+            dynamicContent.innerHTML += cardHtml;
+        }
+   </script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness and Workout Journey</title>
+</head>
+<body>
+
+<style>
+    nav {
+        background-color: #333;
+        color: white;
+        padding: 10px;
+    }
+
+    nav ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    nav li {
+        display: inline;
+        margin-right: 20px;
+    }
+
+    nav a {
+        text-decoration: none;
+        color: white;
+        font-weight: bold;
+    }
+</style>
+
+<nav>
+    <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="login.html">Login</a></li>
+        <li><a href="userRegistration.html">Register</a></li>
+        <li><a href="workouts.html">Workouts</a></li>
+        <li><a href="dietPlans.html">Diet Plans</a></li>
+        <li><a href="about.html">About Us</a></li>
+    </ul>
+</nav>
+<div id="login">
+    <h2>Login</h2>
+    <form id="loginForm">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="submit">Login</button>
+    </form>
+</div>
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const loginForm = document.getElementById("loginForm");
+
+    loginForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const formData = new FormData(loginForm);
+        const userData = {};
+        formData.forEach((value, key) => {
+            userData[key] = value;
+        });
+
+        // Send userData to your Node.js server for authentication
+        fetch('http://localhost:3000/api/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(userData),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Login successful');
+                console.log('Login successful:', data);
+                // Redirect to another page or perform actions after successful login
+            } else {
+                alert('Invalid credentials. Please try again.');
+                console.log('Invalid credentials');
+                // Handle unsuccessful login (optional)
+            }
+        })
+        .catch(error => {
+            console.error('Error during login:', error);
+            // Handle error (optional)
+        });
+    });
+});
+</script>
+
+</body>
+</html>

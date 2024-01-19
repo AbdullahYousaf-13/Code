@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workouts Page</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <style>
+        nav {
+            background-color: #333;
+            color: white;
+            padding: 8px;
+        }
+    
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            margin-top: auto;
+            margin-bottom: auto;
+        }
+    
+        nav li {
+            display: inline;
+            margin-right: 20px;
+        }
+    
+        nav a {
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #ffc107;
+        }
+
+        .card {
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+        .card img {
+            max-height: 200px;
+            object-fit: cover;
+        }
+
+        nav img {
+            margin-left: 16px;
+            height: 40px;
+        }
+    </style>
+    <nav class="nav">
+        <div class="logo">
+            <img src="./assets/logo.png" alt="Logo">
+        </div>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <!-- <li><a href="login.html">Login</a></li> -->
+            <li><a href="userRegistration.html">Register</a></li>
+            <li><a href="workouts.html">Workouts</a></li>
+            <li><a href="dietPlans.html">Diet Plans</a></li>
+            <li><a href="about.html">About Us</a></li>
+        </ul>
+    </nav>
+
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Workouts</h1>
+    <div class="row" id="workoutsContainer">
+        <!-- Workouts will be dynamically added here -->
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"></script>
+
+<script>
+    // Example data received from API
+    fetch('http://localhost:3000/api/workouts')
+        .then(response => response.json())
+        .then(data => {
+            data.forEach((workout, index) => {
+                createWorkoutCard(workout, index + 1);
+            });
+        })
+        .catch(error => console.error('Error fetching workouts data:', error));
+            
+
+    // Function to create a card for each workout
+    function createWorkoutCard(workout, index) {
+        const cardHtml = `
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <img src="./assets/workout${index}.jpg" class="card-img-top" alt="${workout.name} Image">
+                    <div class="card-body">
+                        <h5 class="card-title">${workout.name}</h5>
+                        <p class="card-text">
+                            <strong>Duration:</strong> ${workout.duration}<br>
+                            <strong>Type:</strong> ${workout.type}<br>
+                            <strong>Day:</strong> ${workout.day}<br>
+                            <strong>Description:</strong> ${workout.description}<br>
+                            <strong>Trainer:</strong> ${workout.trainer_id}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.getElementById('workoutsContainer').innerHTML += cardHtml;
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Registration</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <style>
+        nav {
+            background-color: #333;
+            color: white;
+            padding: 8px;
+        }
+    
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            margin-top: auto;
+            margin-bottom: auto;
+        }
+    
+        nav li {
+            display: inline;
+            margin-right: 20px;
+        }
+    
+        nav a {
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #ffc107;
+        }
+
+        .card {
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+        .card img {
+            max-height: 200px;
+            object-fit: cover;
+        }
+
+        nav img {
+            margin-left: 16px;
+            height: 40px;
+        }
+
+        .form-container {
+            max-width: 400px;
+            margin: auto;
+            margin-top: 50px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-container label {
+            font-weight: bold;
+        }
+
+        .form-container input,
+        .form-container select {
+            width: 100%;
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+        }
+
+        .form-container select {
+            height: 45px;
+        }
+
+        .form-container button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .form-container button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+    <nav class="nav">
+        <div class="logo">
+            <img src="./assets/logo.png" alt="Logo">
+        </div>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <!-- <li><a href="login.html">Login</a></li> -->
+            <li><a href="userRegistration.html">Register</a></li>
+            <li><a href="workouts.html">Workouts</a></li>
+            <li><a href="dietPlans.html">Diet Plans</a></li>
+            <li><a href="about.html">About Us</a></li>
+        </ul>
+    </nav>
+
+    <div class="container form-container">
+        <form id="userRegistrationForm">
+            <div class="form-group">
+                <label for="username">Name:</label>
+                <input type="text" class="form-control" id="username" name="username" required>
+            </div>
+    
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+    
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+    
+            <div class="form-group">
+                <label for="contactNumber">Contact Number:</label>
+                <input type="tel" class="form-control" id="contactNumber" name="contactNumber" required>
+            </div>
+    
+            <div class="form-group">
+                <label for="userType">User Type:</label>
+                <select class="form-control" id="userType" name="userType" onchange="showFieldsBasedOnUserType()" required>
+                    <option value="fitness_enthusiast" selected>Fitness Enthusiast</option>
+                    <option value="trainer">Trainer</option>
+                    <option value="dietitian">Dietitian</option>
+                </select>
+            </div>
+    
+            <div id="userTypeFields">
+                <!-- Additional fields specific to each user type will be displayed here -->
+            </div>
+    
+            <button type="submit" class="btn btn-primary">Register</button>
+        </form>
+    </div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"></script>
+
+<script>
+    showFieldsBasedOnUserType()
+    function showFieldsBasedOnUserType() {
+        const userType = document.getElementById('userType').value;
+        const userTypeFields = document.getElementById('userTypeFields');
+
+        // Clear previous fields
+        userTypeFields.innerHTML = '';
+
+        if (userType === 'trainer') {
+            // Fields specific to Trainers
+            const expertiseLabel = document.createElement('label');
+            expertiseLabel.textContent = 'Expertise:';
+            userTypeFields.appendChild(expertiseLabel);
+
+            const expertiseInput = document.createElement('input');
+            expertiseInput.type = 'text';
+            expertiseInput.id = 'expertise';
+            expertiseInput.name = 'expertise';
+            expertiseInput.required = true;
+            userTypeFields.appendChild(expertiseInput);
+        } else if (userType === 'dietitian') {
+            // Fields specific to Dietitians
+            const qualificationsLabel = document.createElement('label');
+            qualificationsLabel.textContent = 'Qualifications:';
+            userTypeFields.appendChild(qualificationsLabel);
+
+            const qualificationsInput = document.createElement('input');
+            qualificationsInput.type = 'text';
+            qualificationsInput.id = 'qualification';
+            qualificationsInput.name = 'qualification';
+            qualificationsInput.required = true;
+            userTypeFields.appendChild(qualificationsInput);
+        } else if (userType === 'fitness_enthusiast') {
+            // Height
+            const heightLabel = document.createElement('label');
+            heightLabel.textContent = 'Height:';
+            userTypeFields.appendChild(heightLabel);
+
+            const heightInput = document.createElement('input');
+            heightInput.type = 'text';
+            heightInput.id = 'height';
+            heightInput.name = 'height';
+            heightInput.required = true;
+            userTypeFields.appendChild(heightInput);
+
+            // Weight
+            const weightLabel = document.createElement('label');
+            weightLabel.textContent = 'Weight:';
+            userTypeFields.appendChild(weightLabel);
+
+            const weightInput = document.createElement('input');
+            weightInput.type = 'text';
+            weightInput.id = 'weight';
+            weightInput.name = 'weight';
+            weightInput.required = true;
+            userTypeFields.appendChild(weightInput);
+
+            // Gender
+            const genderLabel = document.createElement('label');
+            genderLabel.textContent = 'Gender:';
+            userTypeFields.appendChild(genderLabel);
+
+            const genderSelect = document.createElement('select');
+            genderSelect.id = 'gender';
+            genderSelect.name = 'gender';
+            genderSelect.required = true;
+
+            // Add options to the select element
+            const genderOptions = ['Male', 'Female'];
+            genderOptions.forEach(optionText => {
+                const option = document.createElement('option');
+                option.value = optionText.toLowerCase();
+                option.text = optionText;
+                genderSelect.appendChild(option);
+            });
+
+            userTypeFields.appendChild(genderSelect);
+
+            // Date of Birth
+            const dobLabel = document.createElement('label');
+            dobLabel.textContent = 'Date of Birth:';
+            userTypeFields.appendChild(dobLabel);
+
+            const dobInput = document.createElement('input');
+            dobInput.type = 'date';
+            dobInput.id = 'dob';
+            dobInput.name = 'dob';
+            dobInput.required = true;
+            userTypeFields.appendChild(dobInput);
+        }
+
+        // Show the additional fields container
+        userTypeFields.style.display = 'block';
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const registrationForm = document.getElementById("userRegistrationForm");
+
+        registrationForm.addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const formData = new FormData(registrationForm);
+            const userData = {};
+            formData.forEach((value, key) => {
+                userData[key] = value;
+            });
+
+            console.log({ userData })
+
+            // Send userData to your Node.js server
+            fetch('http://localhost:3000/api/users', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(userData),
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('User registration successful');
+                console.log('User registration successful:', data);
+                // Handle success (optional)
+            })
+            .catch(error => {
+                console.error('Error registering user:', error);
+                // Handle error (optional)
+            });
+        });
+    });
+</script>
+
+</body>
+</html>
